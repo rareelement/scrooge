@@ -3,6 +3,16 @@ Description: >-
   Scrooge - AWS Expense monitoring
 Transform:
 - AWS::Serverless-2016-10-31
+Parameters:
+  HeartBeatRateMins: 
+    Type: Number
+    Default: 60
+  CEMetrics:
+    Type: String
+    Default: '{"NetAmortizedCost": "ScroogeNetAmortizedCost", "UnblendedCost": "ScroogeUnblendedCost"}'
+  CloudWatchSpace:
+    Type: String
+    Default: ScroogeSpace
 Resources:  
   ScroogeLambda:
     Type: AWS::Serverless::Function
@@ -12,13 +22,13 @@ Resources:
       Handler: src/handlers/main.heartbeatHandler
       Environment:
         Variables:
-          METRICS: '{"NetAmortizedCost": "ScroogeNetAmortizedCost", "UnblendedCost": "ScroogeUnblendedCost"}'
-          CLOUDWATCH_NAMESPACE: ScroogeSpace
+          METRICS: !Ref CEMetrics
+          CLOUDWATCH_NAMESPACE: !Ref CloudWatchSpace
       Events:
         CloudWatchEvent:
           Type: Schedule
           Properties:
-            Schedule: rate(3 minutes)
+            Schedule: !Sub 'rate(${HeartBeatRateMins} minutes)' 
       MemorySize: 128
       Timeout: 100
       Role: !GetAtt
