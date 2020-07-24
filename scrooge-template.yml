@@ -1,0 +1,58 @@
+AWSTemplateFormatVersion: 2010-09-09
+Description: >-
+  Scrooge - AWS Expense monitoring
+Transform:
+- AWS::Serverless-2016-10-31
+Resources:  
+  ScroogeLambda:
+    Type: AWS::Serverless::Function
+    Properties:
+      Description: A Lambda function that fetches AWS expenses and publishes CloudWatch metrics
+      Runtime: nodejs12.x
+      Handler: src/handlers/main.heartbeatHandler
+      Environment:
+        Variables:
+          METRICS: '{"NetAmortizedCost": "ScroogeNetAmortizedCost", "UnblendedCost": "ScroogeUnblendedCost"}'
+          CLOUDWATCH_NAMESPACE: ScroogeSpace
+      Events:
+        CloudWatchEvent:
+          Type: Schedule
+          Properties:
+            Schedule: rate(3 minutes)
+      MemorySize: 128
+      Timeout: 100
+      Role: !GetAtt
+        - ScroogeRole
+        - Arn
+  LogGroup:
+    Type: AWS::Logs::LogGroup
+    Properties:
+      LogGroupName: !Join ['/', ['/aws/lambda', !Ref ScroogeLambda]]
+      RetentionInDays: 7
+  ScroogeRole:
+    Type: 'AWS::IAM::Role'
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: 2012-10-17
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: lambda.amazonaws.com
+            Action: 'sts:AssumeRole'
+      ManagedPolicyArns:
+        - 'arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole'
+        - !Ref ScroogePolicy
+  ScroogePolicy:
+    Type: 'AWS::IAM::ManagedPolicy'
+    Properties:
+      PolicyDocument:
+        Version: 2012-10-17
+        Statement:
+          - Effect: Allow
+            Action:
+              - ce:*
+            Resource: "*"
+          - Effect: Allow
+            Action:
+              - cloudwatch:PutMetricData
+            Resource: "*"
