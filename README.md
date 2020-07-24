@@ -2,7 +2,7 @@
 
 ## AWS Cost Monitoring Lambda
 
-This Lambda makes it possible to monitor your daily AWS cost in case you have a positive AWS credits balance. A CloudWatch EstimatedCharges metric currently (summer of 2020) available out of the box provides estimated expense after credits have been applied. We use AWS Cost Explorer to pull metrics available for one day and publish them as CloutWatch metrics. Those metrics can be used to create alarms.
+This Lambda makes it possible to monitor your daily AWS cost in case you have a positive AWS credits balance. A CloudWatch EstimatedCharges metric currently (summer of 2020) available out of the box provides estimated expense after credits have been applied. We use AWS Cost Explorer to pull metrics available using Daily Granularity day and to publish them as CloutWatch metrics. These metrics can be used to create alarms.
 
 Note, that use of Cost Explorer API is not free: https://aws.amazon.com/aws-cost-management/pricing/. We assume no responsibility for any charges that can arise from using this lambda or any loss you may incurr.
 

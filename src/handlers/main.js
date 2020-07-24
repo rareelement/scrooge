@@ -37,7 +37,7 @@ exports.heartbeatHandler = async (event, context) => {
                 );
                 return result;
             }
-        ).reduce(
+        ).reduce( // in the future we may want to use TimePeriod greater than one day
             (prev, curr) => {
                 const result = {};
                 ceMetrics.forEach(
