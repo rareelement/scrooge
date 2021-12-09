@@ -33,7 +33,7 @@ Please check AWS documentation for details: https://docs.aws.amazon.com/aws-cost
 
 Create S3 bucket and run the command below
 
-```$sam deploy --stack-name scrooge-stack --s3-bucket your-sam-upload-s3-bucket --s3-prefix scrooge --template scrooge-template.yml --region us-east-1 --capabilities CAPABILITY_NAMED_IAM  --parameter-overrides ParameterKey=CEMetrics,ParameterValue='{\"NetAmortizedCost\":\"ScroogeNetAmortizedCost\"}' ParameterKey=HeartBeatRateMins,ParameterValue=15```
+```$sam deploy --stack-name scrooge-stack --s3-bucket your-sam-upload-s3-bucket --s3-prefix scrooge --template scrooge-template.yml --region us-east-1 --capabilities CAPABILITY_NAMED_IAM --parameter-overrides ParameterKey=CEMetrics,ParameterValue='{\"NetAmortizedCost\":\"ScroogeNetAmortizedCost\"}' ParameterKey=HeartBeatRateMins,ParameterValue=720 ParameterKey=CloudWatchSpace,ParameterValue=ScroogeSpace```
 
 
 DISCLAIMER: This project, code samples and the documentation are provided "as is" without warranty of any kind, either express or implied. Use at your own risk.

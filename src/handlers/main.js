@@ -4,7 +4,7 @@ const costExplorer = new AWS.CostExplorer({ region: 'us-east-1' });
 const cloudWatch = new AWS.CloudWatch({ region: 'us-east-1' });
 
 const { METRICS, CLOUDWATCH_NAMESPACE } = process.env;
-const metrics = METRICS && JSON.parse(METRICS) || { "NetAmortizedCost": "ScroogeNetAmortizedCost" };
+const metrics = METRICS && JSON.parse(METRICS) || { 'NetAmortizedCost': 'ScroogeNetAmortizedCost' };
 const cwNamespace = CLOUDWATCH_NAMESPACE || 'ScroogeSpace';
 
 const ceMetrics = Object.keys(metrics);
@@ -17,6 +17,14 @@ exports.heartbeatHandler = async (event, context) => {
         const end = new Date();
 
         const ceParams = {
+            Filter: {
+                Not: {
+                    Dimensions: { 
+                        Key: 'RECORD_TYPE', 
+                        Values: [ 'Credit' ]
+                    }
+                }
+            },
             TimePeriod: {
                 Start: start.toISOString().slice(0, 10),
                 End: end.toISOString().slice(0, 10)
